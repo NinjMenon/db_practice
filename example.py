@@ -1,20 +1,27 @@
 from pymodm import connect
 from pymodm import MongoModel, fields
+from flask import Flask,requests
 
 connect("mongodb://vcm-1849.vm.duke.edu/db_practice")
 
-class User(MongoModel):
-    email = fields.EmailField(primary_key=True)
-    first_name = fields.CharField()
-    last_name = fields.CharField()
-    password = fields.CharField()
+class Patient(MongoModel):
+	name = fields.CharField()
+	age  = fields.CharField()
+	bmi = fields.CharField()
+     
+@app.route("/new_patient")
+def add_patient():
+	data = request.json()
+	for i in range(len(data)):
+		p = Patient(name = data['name'], age = data['age'], bmi = data['bmi'])
+		p.save()
 
-u = User('user1@email.com', last_name='Ross', first_name='Bob')
-u2 = User('user2@email.com', last_name='Ross', first_name='Rob')
+@app.route("/average_bmi/<age>")
+def avg_bmi(age):
+	avg = []
+	for patient in Patient.objects.raw({"age" : age})
+		avg.append(float(patient.bmi))
+	return(avg.mean())
+			
 
-u.save()
-u2.save()
 
-for user in User.objects.raw({"first_name":"Rob"}):
-	print(user.first_name)
-	print(user.last_name)

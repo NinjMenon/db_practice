@@ -1,8 +1,8 @@
 from pymodm import connect
 from pymodm import MongoModel, fields
-from flask import Flask,requests
+from flask import Flask,request
 
-connect("mongodb://vcm-1849.vm.duke.edu/db_practice")
+connect("mongodb://localhost:27017/db_practice")
 
 class Patient(MongoModel):
 	name = fields.CharField()
@@ -11,19 +11,22 @@ class Patient(MongoModel):
 
 app = Flask(__name__)
      
-@app.route("/new_patient")
+@app.route("/new_patient", methods = ['POST'])
 def add_patient():
-	data = request.json()
+	data = request.json
 	for i in range(len(data)):
 		p = Patient(name = data['name'], age = data['age'], bmi = data['bmi'])
 		p.save()
+	return("DONE")
 
-@app.route("/average_bmi/<age>")
-def avg_bmi(age):
+@app.route("/average_bmi/<ag>")
+def avg_bmi(ag):
 	avg = []
-	for patient in Patient.objects.raw({"age" : age})
-		avg.append(float(patient.bmi))
-	return(avg.mean())
+	for patient in Patient.objects.raw({"age" : ag }):
+		avg.append(ag)
+	results = list(map(int, avg))
+	return("{}".format(sum(results)/len(results)))	
+
 			
 
 

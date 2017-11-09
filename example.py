@@ -8,6 +8,8 @@ class Patient(MongoModel):
 	name = fields.CharField()
 	age  = fields.CharField()
 	bmi = fields.CharField()
+
+app = Flask(__name__)
      
 @app.route("/new_patient")
 def add_patient():
